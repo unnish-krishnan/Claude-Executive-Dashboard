@@ -4,7 +4,7 @@ An interactive executive dashboard for a multi-market vehicle-financing / driver
 
 I built it end to end with **Claude (Cowork)**, starting from a raw Excel export of a weekly dbt aggregation model. Claude wrote the code and I directed the design. It is published here as a static site that runs anywhere, including GitHub Pages.
 
-> **Live demo:** `https://<your-github-username>.github.io/Claude-Executive-Dashboard/`
+> **Live demo:** `https://unnish-krishnan.github.io/Claude-Executive-Dashboard/`
 > **Data:** all figures are **dummy data** created for demonstration. They are not real business numbers.
 
 ![Overview](docs/overview.png)
