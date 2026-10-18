@@ -1,0 +1,63 @@
+/* Design tokens the dashboard page expects (mirrors the Claude Dashboard artifact theme). */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+:root {
+  --font-anthropic-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-anthropic-serif: Georgia, 'Times New Roman', serif;
+
+  --color-fg: #14162b;
+  --color-fg-muted: #5f6478;
+  --color-bg: #f5f6fb;
+  --color-panel: #ffffff;
+  --color-border-line: #e3e5ef;
+  --color-ok: #0f9d7a;
+  --color-warn: #b7791f;
+  --color-bad: #d6453d;
+
+  --cds-font-size-caption: 0.78rem;
+  --cds-font-size-body: 0.92rem;
+  --cds-font-size-heading: 1rem;
+  --cds-font-size-title: 1.75rem;
+  --cds-font-weight-medium: 500;
+
+  --cds-pad-xs: 4px;  --cds-pad-sm: 8px;  --cds-pad-md: 12px; --cds-pad-lg: 18px; --cds-pad-xl: 28px;
+  --cds-gap-xs: 4px;  --cds-gap-sm: 8px;  --cds-gap-md: 16px; --cds-gap-lg: 24px; --cds-gap-xl: 32px;
+  --cds-radius: 10px;
+
+  --cds-chart-grid: #eceef5;
+  --cds-chart-axis: #c9ccd9;
+  --cds-chart-reference: #9aa0b4;
+  --cds-chart-muted: #c9ccd9;
+  --cds-surface-popover: #ffffff;
+  --cds-border: #e3e5ef;
+  --cds-text-secondary: #5f6478;
+  --cds-shadow-popover: 0 8px 24px rgba(15, 18, 40, 0.14);
+  --cds-dur-slow: 300ms;
+  --cds-ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-fg: #e8eaf6;
+    --color-fg-muted: #9aa0b8;
+    --color-bg: #0a0d22;
+    --color-panel: #121634;
+    --color-border-line: #252a52;
+    --color-ok: #34d3a6;
+    --color-bad: #ff7a70;
+    --cds-chart-grid: #1f2448;
+    --cds-chart-axis: #343a68;
+    --cds-chart-reference: #6b7199;
+    --cds-surface-popover: #181d42;
+    --cds-border: #2b3160;
+    --cds-text-secondary: #9aa0b8;
+    --cds-shadow-popover: 0 8px 24px rgba(0, 0, 0, 0.5);
+  }
+}
+
+html, body { margin: 0; background: var(--color-bg); color: var(--color-fg); font-family: var(--font-anthropic-sans); }
+#dash-root { max-width: 1400px; margin-inline: auto; }
+
+/* Loading placeholder used by the page */
+.dash-skeleton { color: transparent !important; background: var(--color-border-line); border-radius: 6px; animation: dash-pulse 1.2s ease-in-out infinite; }
+@keyframes dash-pulse { 50% { opacity: 0.5; } }

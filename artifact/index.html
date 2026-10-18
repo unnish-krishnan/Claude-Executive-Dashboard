@@ -1,0 +1,649 @@
+<style>
+#dash-root { --dash-gutter: 0; }
+.mv {
+  --mv-navy: #0b1036; --mv-navy-2: #1b2370; --mv-teal: #00c2a8; --mv-indigo: #6366f1;
+  --mv-coral: #ff6b57; --mv-amber: #f5a524; --mv-sky: #38bdf8;
+  position: relative; font-family: var(--font-anthropic-sans); color: var(--color-fg);
+  font-variant-numeric: tabular-nums;
+}
+.mv-hero {
+  background: radial-gradient(120% 140% at 100% 0%, var(--mv-navy-2) 0%, var(--mv-navy) 60%);
+  color: #fff; padding: var(--cds-pad-xl) var(--cds-pad-xl) 0; border-radius: 0 0 18px 18px;
+}
+.mv-brand { display: flex; align-items: center; gap: var(--cds-gap-sm); font-size: var(--cds-font-size-caption); letter-spacing: .08em; text-transform: uppercase; color: #b9c0ff; }
+.mv-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--mv-teal); box-shadow: 0 0 0 4px rgba(0,194,168,.2); }
+.mv-title { font-size: var(--cds-font-size-title); font-weight: 600; margin: var(--cds-gap-xs) 0 var(--cds-gap-xs); line-height: 1.2; }
+.mv-take { color: #d6dbff; font-size: var(--cds-font-size-body); max-width: 70ch; margin: 0; }
+.mv-take b { color: #fff; font-weight: 600; }
+.mv-filters { display: flex; flex-wrap: wrap; gap: var(--cds-gap-sm); align-items: end; margin-top: var(--cds-pad-lg); }
+.mv-filters label { display: flex; flex-direction: column; gap: 4px; font-size: var(--cds-font-size-caption); color: #b9c0ff; min-width: 9rem; flex: 1 1 9rem; max-width: 15rem; }
+.mv-filters select {
+  appearance: none; background: rgba(255,255,255,.08) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23b9c0ff' fill='none' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right 10px center;
+  border: 1px solid rgba(255,255,255,.18); color: #fff; border-radius: 10px; padding: 8px 28px 8px 10px; font: inherit; font-size: var(--cds-font-size-body);
+}
+.mv-filters select option { color: #111; }
+.mv-filters select:focus-visible, .mv-btn:focus-visible, .mv-tab:focus-visible { outline: 2px solid var(--mv-teal); outline-offset: 2px; }
+.mv-btn { background: var(--mv-teal); color: var(--mv-navy); border: 0; border-radius: 999px; padding: 9px 18px; font: inherit; font-weight: 600; cursor: pointer; }
+.mv-btn:hover { filter: brightness(1.08); }
+.mv-tabs { display: flex; gap: 4px; margin-top: var(--cds-pad-lg); overflow-x: auto; scrollbar-width: none; }
+.mv-tab { background: none; border: 0; color: #b9c0ff; font: inherit; font-weight: 500; padding: 12px 16px; border-bottom: 3px solid transparent; cursor: pointer; white-space: nowrap; }
+.mv-tab[aria-selected="true"] { color: #fff; border-bottom-color: var(--mv-teal); }
+.mv-tab:hover { color: #fff; }
+.mv-body { padding: var(--cds-pad-xl) var(--cds-pad-lg); }
+.mv-page[hidden] { display: none; }
+.mv-h2 { font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); margin: var(--cds-pad-lg) 0 var(--cds-gap-sm); }
+.mv-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr)); gap: var(--cds-gap-md); }
+.mv-kpi { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: 14px; padding: var(--cds-pad-md) var(--cds-pad-lg); position: relative; overflow: hidden; }
+.mv-kpi::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--mv-teal); }
+.mv-kpi:nth-child(6n+2)::before { background: var(--mv-indigo); }
+.mv-kpi:nth-child(6n+3)::before { background: var(--mv-sky); }
+.mv-kpi:nth-child(6n+4)::before { background: var(--mv-amber); }
+.mv-kpi:nth-child(6n+5)::before { background: var(--mv-coral); }
+.mv-kpi:nth-child(6n+6)::before { background: var(--mv-navy-2); }
+.mv-kpi-l { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+.mv-kpi-v { font-size: var(--cds-font-size-title); font-weight: 600; margin: 6px 0 4px; line-height: 1.1; }
+.mv-kpi-d { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+.mv-up { color: var(--color-ok); } .mv-down { color: var(--color-bad); }
+.mv-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr)); gap: var(--cds-gap-md); margin-top: var(--cds-gap-md); }
+.mv-card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: 14px; padding: var(--cds-pad-lg); min-width: 0; }
+.mv-card.wide { grid-column: 1 / -1; }
+.mv-ct { font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); margin: 0; }
+.mv-cn { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin: 2px 0 var(--cds-gap-sm); }
+.mv-legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin-bottom: 6px; }
+.mv-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+.mv-chart { min-height: 240px; position: relative; }
+.mv-chart svg { display: block; overflow: visible; }
+.mv-chart .tick text { fill: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
+.mv-chart .grid line { stroke: var(--cds-chart-grid); }
+.mv-chart .domain { stroke: var(--cds-chart-axis); }
+.mv-hb { display: grid; grid-template-columns: minmax(5rem, max-content) 1fr auto; gap: 8px 10px; align-items: center; font-size: var(--cds-font-size-caption); min-height: 120px; }
+.mv-hb-l { color: var(--color-fg); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mv-hb-t { height: 14px; background: color-mix(in srgb, var(--color-fg) 6%, transparent); border-radius: 7px; overflow: hidden; }
+.mv-hb-b { height: 100%; border-radius: 7px; background: var(--mv-teal); }
+.mv-hb-b.sel { background: var(--mv-indigo); }
+.mv-hb-v { text-align: right; min-width: 4rem; }
+.mv-fun { display: flex; flex-direction: column; gap: 10px; }
+.mv-fun-r { display: grid; grid-template-columns: 8.5rem 1fr; gap: 10px; align-items: center; font-size: var(--cds-font-size-caption); }
+.mv-fun-bar { height: 30px; border-radius: 8px; display: flex; align-items: center; padding: 0 10px; color: #fff; font-weight: 600; min-width: 4.5rem; background: linear-gradient(90deg, var(--mv-navy-2), var(--mv-indigo)); }
+.mv-fun-r:nth-child(2) .mv-fun-bar { background: linear-gradient(90deg, #2c3a9a, #4f7cf0); }
+.mv-fun-r:nth-child(3) .mv-fun-bar { background: linear-gradient(90deg, #1f6fb5, var(--mv-sky)); color: #06223a; }
+.mv-fun-r:nth-child(4) .mv-fun-bar { background: linear-gradient(90deg, #00a08b, var(--mv-teal)); color: #032b26; }
+.mv-fun-r:nth-child(5) .mv-fun-bar { background: linear-gradient(90deg, #d98b10, var(--mv-amber)); color: #2b1a00; }
+.mv-fun-s { color: var(--color-fg-muted); font-weight: 400; margin-left: 6px; }
+.mv-tip { position: absolute; pointer-events: none; z-index: 5; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); border-radius: var(--cds-radius); box-shadow: var(--cds-shadow-popover); padding: var(--cds-pad-xs) var(--cds-pad-sm); font-size: var(--cds-font-size-caption); min-width: 9rem; }
+.mv-tip[hidden] { display: none; }
+.mv-tip .h { color: var(--cds-text-secondary); margin-bottom: 2px; }
+.mv-tip .r { display: flex; gap: 8px; align-items: center; justify-content: space-between; }
+.mv-tip i { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 6px; }
+.mv-tools { display: flex; flex-wrap: wrap; gap: var(--cds-gap-sm); justify-content: space-between; align-items: center; margin-bottom: var(--cds-gap-sm); }
+.mv-search { border: 1px solid var(--color-border-line); background: var(--color-bg); color: var(--color-fg); border-radius: 10px; padding: 8px 12px; font: inherit; min-width: 12rem; flex: 0 1 18rem; }
+.mv-tw { max-height: 34rem; overflow: auto; border-radius: 10px; }
+.mv-table { width: 100%; border-collapse: collapse; font-size: var(--cds-font-size-caption); }
+.mv-table th { position: sticky; top: 0; background: var(--color-panel); text-align: right; font-weight: 600; color: var(--color-fg-muted); padding: 0; border-bottom: 1px solid var(--color-border-line); white-space: nowrap; }
+.mv-table th button { all: unset; cursor: pointer; display: block; padding: 10px 10px; width: 100%; box-sizing: border-box; }
+.mv-table th[aria-sort="ascending"] button::after { content: " ▲"; color: var(--mv-teal); }
+.mv-table th[aria-sort="descending"] button::after { content: " ▼"; color: var(--mv-teal); }
+.mv-table th:first-child, .mv-table td:first-child, .mv-table th:nth-child(2), .mv-table td:nth-child(2) { text-align: left; }
+.mv-table td { padding: 9px 10px; text-align: right; border-bottom: 1px solid var(--color-border-line); white-space: nowrap; }
+.mv-table tbody tr { cursor: pointer; }
+.mv-table tbody tr:hover { background: color-mix(in srgb, var(--mv-teal) 8%, transparent); }
+.mv-pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-weight: 600; }
+.mv-pill.g { background: color-mix(in srgb, var(--mv-teal) 18%, transparent); }
+.mv-pill.a { background: color-mix(in srgb, var(--mv-amber) 22%, transparent); }
+.mv-pill.r { background: color-mix(in srgb, var(--mv-coral) 22%, transparent); }
+.mv-foot { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin-top: var(--cds-pad-lg); }
+[data-dash-source-state=empty] { color: transparent; }
+[data-dash-source-state=refreshing] { opacity: .5; transition: opacity var(--cds-dur-slow); }
+@media (max-width: 640px) {
+  .mv-hero { padding: var(--cds-pad-lg) var(--cds-pad-md) 0; }
+  .mv-body { padding: var(--cds-pad-lg) var(--cds-pad-sm); }
+  .mv-table .hn { display: none; }
+}
+</style>
+
+<div class="mv" id="mv">
+  <header class="mv-hero">
+    <div class="mv-brand"><span class="mv-dot"></span>Executive Weekly Metrics and Fleet Utilization</div>
+    <h1 class="mv-title" id="mv-title">Fleet, drivers &amp; collections</h1>
+    <p class="mv-take" id="mv-take">Week of <b class="mv-wk">—</b> · <span class="mv-scope">All markets</span>: <b class="mv-v dash-skeleton" data-source="agg" data-field="core_vehicles_on_exit_day" data-fmt="int">—</b> core vehicles, <b class="mv-v dash-skeleton" data-source="agg" data-field="utilisation" data-fmt="pct">—</b> assigned, and <b class="mv-v dash-skeleton" data-source="agg" data-field="collection_rate" data-fmt="pct">—</b> of expected cash collected.</p>
+    <div class="mv-filters">
+      <label>Country<select id="f-country" data-source="agg" aria-label="Country"></select></label>
+      <label>City<select id="f-city" data-source="agg" aria-label="City"></select></label>
+      <label>Week starting<select id="f-week" data-source="agg" aria-label="Week"></select></label>
+      <button class="mv-btn" id="f-reset" type="button">Reset</button>
+    </div>
+    <nav class="mv-tabs" role="tablist" aria-label="Pages">
+      <button class="mv-tab" role="tab" id="tab-overview" data-page="overview" aria-selected="true">Overview</button>
+      <button class="mv-tab" role="tab" id="tab-fleet" data-page="fleet" aria-selected="false">Fleet &amp; utilisation</button>
+      <button class="mv-tab" role="tab" id="tab-drivers" data-page="drivers" aria-selected="false">Drivers &amp; trips</button>
+      <button class="mv-tab" role="tab" id="tab-collections" data-page="collections" aria-selected="false">Collections &amp; debt</button>
+      <button class="mv-tab" role="tab" id="tab-cities" data-page="cities" aria-selected="false">City scorecard</button>
+    </nav>
+  </header>
+
+  <div class="mv-body">
+    <!-- OVERVIEW -->
+    <section class="mv-page" id="overview" role="tabpanel">
+      <div class="mv-kpis">
+        <div class="mv-kpi" id="k-core"><div class="mv-kpi-l">Core fleet (vehicles)</div><div class="mv-kpi-v mv-v dash-skeleton" data-source="agg" data-field="core_vehicles_on_exit_day" data-fmt="int">—</div><div class="mv-kpi-d"><span class="mv-d" data-source="wow" data-field="core_vehicles_on_exit_day_chg" data-fmt="rel" data-good="up">—</span> vs prior week</div></div>
+        <div class="mv-kpi" id="k-assigned"><div class="mv-kpi-l">Assigned vehicles</div><div class="mv-kpi-v mv-v dash-skeleton" data-source="agg" data-field="assigned_vehicles_on_exit_day" data-fmt="int">—</div><div class="mv-kpi-d"><span class="mv-d" data-source="wow" data-field="assigned_vehicles_on_exit_day_chg" data-fmt="rel" data-good="up">—</span> vs prior week</div></div>
+        <div class="mv-kpi" id="k-util"><div class="mv-kpi-l">Fleet utilisation</div><div class="mv-kpi-v mv-v dash-skeleton" data-source="agg" data-field="utilisation" data-fmt="pct">—</div><div class="mv-kpi-d"><span class="mv-d" data-source="wow" data-field="utilisation_chg" data-fmt="pp" data-good="up">—</span> vs prior week</div></div>
+        <div class="mv-kpi" id="k-billable"><div class="mv-kpi-l">Billable assignment days</div><div class="mv-kpi-v mv-v dash-skeleton" data-source="agg" data-field="billable_pct" data-fmt="pct">—</div><div class="mv-kpi-d"><span class="mv-d" data-source="wow" data-field="billable_pct_chg" data-fmt="pp" data-good="up">—</span> vs prior week</div></div>
+        <div class="mv-kpi" id="k-remit"><div class="mv-kpi-l">Remittance billed (USD)</div><div class="mv-kpi-v mv-v dash-skeleton" data-source="agg" data-field="cycle_remittance_usd" data-fmt="usd">—</div><div class="mv-kpi-d"><span class="mv-d" data-source="wow" data-field="cycle_remittance_usd_chg" data-fmt="rel" data-good="up">—</span> vs prior week</div></div>
+        <div class="mv-kpi" id="k-coll"><div class="mv-kpi-l">Collection rate</div><div class="mv-kpi-v mv-v dash-skeleton" data-source="agg" data-field="collection_rate" data-fmt="pct">—</div><div class="mv-kpi-d"><span class="mv-d" data-source="wow" data-field="collection_rate_chg" data-fmt="pp" data-good="up">—</span> vs prior week</div></div>
+      </div>
+      <div class="mv-grid">
+        <div class="mv-card" id="c-funnel">
+          <h3 class="mv-ct">Fleet funnel</h3>
+          <p class="mv-cn">Vehicles on the week's exit day, share of core fleet</p>
+          <div class="mv-fun" data-source="agg">
+            <div class="mv-fun-r"><span>Core</span><div><div class="mv-fun-bar" data-f="core_vehicles_on_exit_day"><span class="mv-v" data-source="agg" data-field="core_vehicles_on_exit_day" data-fmt="int">—</span></div></div></div>
+            <div class="mv-fun-r"><span>Accessible</span><div><div class="mv-fun-bar" data-f="accessible_vehicles_on_exit_day"><span class="mv-v" data-source="agg" data-field="accessible_vehicles_on_exit_day" data-fmt="int">—</span></div></div></div>
+            <div class="mv-fun-r"><span>Available</span><div><div class="mv-fun-bar" data-f="available_vehicles_on_exit_day"><span class="mv-v" data-source="agg" data-field="available_vehicles_on_exit_day" data-fmt="int">—</span></div></div></div>
+            <div class="mv-fun-r"><span>Assigned</span><div><div class="mv-fun-bar" data-f="assigned_vehicles_on_exit_day"><span class="mv-v" data-source="agg" data-field="assigned_vehicles_on_exit_day" data-fmt="int">—</span></div></div></div>
+            <div class="mv-fun-r"><span>Ready to assign (idle)</span><div><div class="mv-fun-bar" data-f="ready_to_be_assigned_vehicles"><span class="mv-v" data-source="agg" data-field="ready_to_be_assigned_vehicles" data-fmt="int">—</span></div></div></div>
+          </div>
+        </div>
+        <div class="mv-card" id="c-ov-cash">
+          <h3 class="mv-ct">Expected cash vs collected (USD)</h3>
+          <p class="mv-cn">Weekly, all weeks in the file</p>
+          <div class="mv-chart" data-source="agg" data-chart="ov-cash"></div>
+        </div>
+        <div class="mv-card" id="c-ov-mkt">
+          <h3 class="mv-ct">Core fleet by market</h3>
+          <p class="mv-cn mv-mkt-note">Selected week</p>
+          <div class="mv-hb" data-source="agg" data-hbar="core_vehicles_on_exit_day" data-fmt="int"></div>
+        </div>
+        <div class="mv-card" id="c-ov-fleet">
+          <h3 class="mv-ct">Core vs assigned vehicles</h3>
+          <p class="mv-cn">Weekly trend</p>
+          <div class="mv-chart" data-source="agg" data-chart="ov-fleet"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FLEET -->
+    <section class="mv-page" id="fleet" role="tabpanel" hidden>
+      <div class="mv-kpis">
+        <div class="mv-kpi"><div class="mv-kpi-l">Available vehicles</div><div class="mv-kpi-v mv-v dash-skeleton" data-source="agg" data-field="available_vehicles_on_exit_day" data-fmt="int">—</div><div class="mv-kpi-d"><span class="mv-d" data-source="wow" data-field="available_vehicles_on_exit_day_chg" data-fmt="rel" data-good="up">—</span> vs prior week</div></div>
+        <div class="mv-kpi"><div class="mv-kpi-l">Assigned ÷ available</div><div class="mv-kpi-v mv-v dash-skeleton" data-source="agg" data-field="assigned_by_available" data-fmt="pct">—</div><div class="mv-kpi-d"><span class="mv-d" data-source="wow" data-field="assigned_by_available_chg" data-fmt="pp" data-good="up">—</span> vs prior week</div></div>
+        <div class="mv-kpi"><div class="mv-kpi-l">Ready to be assigned</div><div class="mv-kpi-v mv-v dash-skeleton" data-source="agg" data-field="ready_to_be_assigned_vehicles" data-fmt="int">—</div><div class="mv-kpi-d"><span class="mv-d" data-source="wow" data-field="ready_to_be_assigned_vehicles_chg" data-fmt="rel" data-good="down">—</span> vs prior week</div></div>
+        <div class="mv-kpi"><div class="mv-kpi-l">Non-billed assigned days</div><div class="mv-kpi-v mv-v dash-skeleton" data-source="agg" data-field="non_billed_assigned_days" data-fmt="int">—</div><div class="mv-kpi-d"><span class="mv-d" data-source="wow" data-field="non_billed_assigned_days_chg" data-fmt="rel" data-good="down">—</span> vs prior week</div></div>
+      </div>
+      <div class="mv-grid">
+        <div class="mv-card wide" id="c-fl-veh">
+          <h3 class="mv-ct">Vehicle pipeline</h3>
+          <p class="mv-cn">Core, available and assigned vehicles per week</p>
+          <div class="mv-chart" data-source="agg" data-chart="fl-veh"></div>
+        </div>
+        <div class="mv-card" id="c-fl-rate">
+          <h3 class="mv-ct">Utilisation ratios</h3>
+          <p class="mv-cn">Assigned ÷ core, assigned ÷ available, billed ÷ assigned days</p>
+          <div class="mv-chart" data-source="agg" data-chart="fl-rate"></div>
+        </div>
+        <div class="mv-card" id="c-fl-ready">
+          <h3 class="mv-ct">Ready to be assigned</h3>
+          <p class="mv-cn">Idle vehicles waiting for a driver, per week</p>
+          <div class="mv-chart" data-source="agg" data-chart="fl-ready"></div>
+        </div>
+        <div class="mv-card wide" id="c-fl-mkt">
+          <h3 class="mv-ct">Utilisation by market</h3>
+          <p class="mv-cn mv-mkt-note">Selected week</p>
+          <div class="mv-hb" data-source="agg" data-hbar="utilisation" data-fmt="pct"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DRIVERS -->
+    <section class="mv-page" id="drivers" role="tabpanel" hidden>
+      <div class="mv-kpis">
+        <div class="mv-kpi"><div class="mv-kpi-l">Active drivers</div><div class="mv-kpi-v mv-v dash-skeleton" data-source="agg" data-field="active_drivers" data-fmt="int">—</div><div class="mv-kpi-d"><span class="mv-d" data-source="wow" data-field="active_drivers_chg" data-fmt="rel" data-good="up">—</span> vs prior week</div></div>
+        <div class="mv-kpi"><div class="mv-kpi-l">Total trips</div><div class="mv-kpi-v mv-v dash-skeleton" data-source="agg" data-field="total_trips" data-fmt="int">—</div><div class="mv-kpi-d"><span class="mv-d" data-source="wow" data-field="total_trips_chg" data-fmt="rel" data-good="up">—</span> vs prior week</div></div>
+        <div class="mv-kpi"><div class="mv-kpi-l">Trips per supply hour</div><div class="mv-kpi-v mv-v dash-skeleton" data-source="agg" data-field="trips_per_hour" data-fmt="dec">—</div><div class="mv-kpi-d"><span class="mv-d" data-source="wow" data-field="trips_per_hour_chg" data-fmt="rel" data-good="up">—</span> vs prior week</div></div>
+        <div class="mv-kpi"><div class="mv-kpi-l">Supply hours per active driver</div><div class="mv-kpi-v mv-v dash-skeleton" data-source="agg" data-field="sh_per_ad" data-fmt="dec1">—</div><div class="mv-kpi-d"><span class="mv-d" data-source="wow" data-field="sh_per_ad_chg" data-fmt="rel" data-good="up">—</span> vs prior week</div></div>
+        <div class="mv-kpi"><div class="mv-kpi-l">Newly assigned drivers</div><div class="mv-kpi-v mv-v dash-skeleton" data-source="agg" data-field="newly_assigned_drn_count" data-fmt="int">—</div><div class="mv-kpi-d"><span class="mv-d" data-source="wow" data-field="newly_assigned_drn_count_chg" data-fmt="rel" data-good="up">—</span> vs prior week</div></div>
+        <div class="mv-kpi"><div class="mv-kpi-l">Unbilled driver rate (14d)</div><div class="mv-kpi-v mv-v dash-skeleton" data-source="agg" data-field="unbilled_rate" data-fmt="pct">—</div><div class="mv-kpi-d"><span class="mv-d" data-source="wow" data-field="unbilled_rate_chg" data-fmt="pp" data-good="down">—</span> vs prior week</div></div>
+      </div>
+      <div class="mv-grid">
+        <div class="mv-card" id="c-dr-act">
+          <h3 class="mv-ct">Active vs trip-active drivers</h3>
+          <p class="mv-cn">Weekly, cities that report trip data</p>
+          <div class="mv-chart" data-source="agg" data-chart="dr-act"></div>
+        </div>
+        <div class="mv-card" id="c-dr-trips">
+          <h3 class="mv-ct">Total trips</h3>
+          <p class="mv-cn">Per week</p>
+          <div class="mv-chart" data-source="agg" data-chart="dr-trips"></div>
+        </div>
+        <div class="mv-card" id="c-dr-acq">
+          <h3 class="mv-ct">Driver acquisition</h3>
+          <p class="mv-cn">Newly assigned and win-back drivers per week</p>
+          <div class="mv-chart" data-source="agg" data-chart="dr-acq"></div>
+        </div>
+        <div class="mv-card" id="c-dr-unb">
+          <h3 class="mv-ct">Unbilled driver rate</h3>
+          <p class="mv-cn">Drivers billed 21–14 days ago who went unbilled in the last 14 days</p>
+          <div class="mv-chart" data-source="agg" data-chart="dr-unb"></div>
+        </div>
+      </div>
+      <p class="mv-foot">Trip, supply-hour and active-driver metrics are only reported for some cities; ratios use only those cities.</p>
+    </section>
+
+    <!-- COLLECTIONS -->
+    <section class="mv-page" id="collections" role="tabpanel" hidden>
+      <div class="mv-kpis">
+        <div class="mv-kpi"><div class="mv-kpi-l">Expected cash (USD)</div><div class="mv-kpi-v mv-v dash-skeleton" data-source="agg" data-field="cycle_expected_cash_usd" data-fmt="usd">—</div><div class="mv-kpi-d"><span class="mv-d" data-source="wow" data-field="cycle_expected_cash_usd_chg" data-fmt="rel" data-good="up">—</span> vs prior week</div></div>
+        <div class="mv-kpi"><div class="mv-kpi-l">Driver payments (USD)</div><div class="mv-kpi-v mv-v dash-skeleton" data-source="agg" data-field="cycle_driver_payment_usd" data-fmt="usd">—</div><div class="mv-kpi-d"><span class="mv-d" data-source="wow" data-field="cycle_driver_payment_usd_chg" data-fmt="rel" data-good="up">—</span> vs prior week</div></div>
+        <div class="mv-kpi"><div class="mv-kpi-l">Collection rate</div><div class="mv-kpi-v mv-v dash-skeleton" data-source="agg" data-field="collection_rate" data-fmt="pct">—</div><div class="mv-kpi-d"><span class="mv-d" data-source="wow" data-field="collection_rate_chg" data-fmt="pp" data-good="up">—</span> vs prior week</div></div>
+        <div class="mv-kpi"><div class="mv-kpi-l">Arrears repaid (USD)</div><div class="mv-kpi-v mv-v dash-skeleton" data-source="agg" data-field="arrears_repayment_usd" data-fmt="usd">—</div><div class="mv-kpi-d"><span class="mv-d" data-source="wow" data-field="arrears_repayment_usd_chg" data-fmt="rel" data-good="up">—</span> vs prior week</div></div>
+        <div class="mv-kpi"><div class="mv-kpi-l">Closing debt (USD)</div><div class="mv-kpi-v mv-v dash-skeleton" data-source="agg" data-field="closing_debt_usd" data-fmt="usd">—</div><div class="mv-kpi-d"><span class="mv-d" data-source="wow" data-field="closing_debt_usd_chg" data-fmt="rel" data-good="down">—</span> vs prior week</div></div>
+        <div class="mv-kpi"><div class="mv-kpi-l">Gross bookings (USD)</div><div class="mv-kpi-v mv-v dash-skeleton" data-source="agg" data-field="gross_booking_usd" data-fmt="usd">—</div><div class="mv-kpi-d"><span class="mv-d" data-source="wow" data-field="gross_booking_usd_chg" data-fmt="rel" data-good="up">—</span> vs prior week</div></div>
+      </div>
+      <div class="mv-grid">
+        <div class="mv-card" id="c-co-cash">
+          <h3 class="mv-ct">Expected cash vs driver payments (USD)</h3>
+          <p class="mv-cn">Per week</p>
+          <div class="mv-chart" data-source="agg" data-chart="co-cash"></div>
+        </div>
+        <div class="mv-card" id="c-co-rate">
+          <h3 class="mv-ct">Collection rate</h3>
+          <p class="mv-cn">Driver payments ÷ expected cash</p>
+          <div class="mv-chart" data-source="agg" data-chart="co-rate"></div>
+        </div>
+        <div class="mv-card" id="c-co-debt">
+          <h3 class="mv-ct">Driver debt (USD)</h3>
+          <p class="mv-cn">Opening and closing debt per week</p>
+          <div class="mv-chart" data-source="agg" data-chart="co-debt"></div>
+        </div>
+        <div class="mv-card" id="c-co-mkt">
+          <h3 class="mv-ct">Collection rate by market</h3>
+          <p class="mv-cn mv-mkt-note">Selected week</p>
+          <div class="mv-hb" data-source="agg" data-hbar="collection_rate" data-fmt="pct"></div>
+        </div>
+      </div>
+      <p class="mv-foot">All money figures use the file's USD-converted columns, so markets add up across currencies.</p>
+    </section>
+
+    <!-- CITIES -->
+    <section class="mv-page" id="cities" role="tabpanel" hidden>
+      <div class="mv-card" id="c-table">
+        <div class="mv-tools">
+          <div><h3 class="mv-ct">City scorecard</h3><p class="mv-cn">Selected week · click a city to filter every page</p></div>
+          <input class="mv-search" id="t-search" type="search" placeholder="Search city or country" aria-label="Search cities">
+        </div>
+        <div class="mv-tw">
+          <table class="mv-table" id="t-cities" data-source="agg" data-row-key="key">
+            <thead><tr>
+              <th data-field="name"><button type="button">City</button></th>
+              <th data-field="country" class="hn"><button type="button">Country</button></th>
+              <th data-field="core_vehicles_on_exit_day"><button type="button">Core fleet</button></th>
+              <th data-field="assigned_vehicles_on_exit_day" class="hn"><button type="button">Assigned</button></th>
+              <th data-field="utilisation"><button type="button">Utilisation</button></th>
+              <th data-field="billable_pct" class="hn"><button type="button">Billable days</button></th>
+              <th data-field="active_drivers" class="hn"><button type="button">Active drivers</button></th>
+              <th data-field="total_trips" class="hn"><button type="button">Trips</button></th>
+              <th data-field="cycle_remittance_usd" class="hn"><button type="button">Remittance $</button></th>
+              <th data-field="collection_rate"><button type="button">Collection</button></th>
+              <th data-field="closing_debt_usd" class="hn"><button type="button">Closing debt $</button></th>
+              <th data-field="unbilled_rate" class="hn"><button type="button">Unbilled rate</button></th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+  <div class="mv-tip" id="mv-tip" hidden></div>
+</div>
+
+<script>
+dash.calc('agg', {
+  title: 'Weekly rollups by market',
+  description: 'Sums each metric per week for all markets, each country and each city, then works out the ratios from those sums.',
+  inputs: ['weekly'],
+  fn: (weekly) => {
+    const sums = ['core_vehicles_on_exit_day', 'accessible_vehicles_on_exit_day', 'available_vehicles_on_exit_day', 'assigned_vehicles_on_exit_day', 'ready_to_be_assigned_vehicles', 'total_billed_days', 'total_assigned_days', 'non_billed_assigned_days', 'newly_assigned_drn_count', 'winback_driver_count', 'active_drivers', 'trip_active_drivers', 'total_trips', 'supply_hours', 'gross_booking_usd', 'cycle_remittance_usd', 'cycle_expected_cash_usd', 'cycle_driver_payment_usd', 'arrears_repayment_usd', 'opening_debt_usd', 'closing_debt_usd', 'billed_drivers_21_to_14', 'unbilled_drivers_last_14'];
+    const groups = new Map();
+    for (const r of weekly) {
+      for (const [level, name] of [['all', 'All markets'], ['country', r.country], ['city', r.city]]) {
+        const key = r.week_start + '|' + level + '|' + name;
+        if (!groups.has(key)) groups.set(key, Object.fromEntries([['key', key], ['week', r.week_start], ['level', level], ['name', name], ['country', level === 'all' ? 'All markets' : r.country], ...sums.map((c) => [c, null])]));
+        const g = groups.get(key);
+        for (const c of sums) if (r[c] !== null && r[c] !== undefined && r[c] !== '') g[c] = (g[c] ?? 0) + Number(r[c]);
+      }
+    }
+    const div = (a, b) => (a === null || !b ? null : a / b);
+    return [...groups.values()].map((g) => ({
+      ...g,
+      utilisation: div(g.assigned_vehicles_on_exit_day, g.core_vehicles_on_exit_day),
+      assigned_by_available: div(g.assigned_vehicles_on_exit_day, g.available_vehicles_on_exit_day),
+      billable_pct: div(g.total_billed_days, g.total_assigned_days),
+      collection_rate: div(g.cycle_driver_payment_usd, g.cycle_expected_cash_usd),
+      trips_per_hour: div(g.total_trips, g.supply_hours),
+      sh_per_ad: div(g.supply_hours, g.active_drivers),
+      unbilled_rate: div(g.unbilled_drivers_last_14, g.billed_drivers_21_to_14),
+    }));
+  },
+});
+
+dash.calc('wow', {
+  title: 'Change vs prior week',
+  description: 'For each market and week: the relative change of counts and money, and the point change of rates, against the week before.',
+  inputs: ['agg'],
+  fn: (agg) => {
+    const rates = ['utilisation', 'assigned_by_available', 'billable_pct', 'collection_rate', 'unbilled_rate'];
+    const rel = ['core_vehicles_on_exit_day', 'assigned_vehicles_on_exit_day', 'available_vehicles_on_exit_day', 'ready_to_be_assigned_vehicles', 'non_billed_assigned_days', 'active_drivers', 'total_trips', 'trips_per_hour', 'sh_per_ad', 'newly_assigned_drn_count', 'cycle_remittance_usd', 'cycle_expected_cash_usd', 'cycle_driver_payment_usd', 'arrears_repayment_usd', 'closing_debt_usd', 'gross_booking_usd'];
+    const byKey = new Map(agg.map((r) => [r.key, r]));
+    return agg.map((r) => {
+      const d = new Date(r.week + 'T00:00:00Z');
+      d.setUTCDate(d.getUTCDate() - 7);
+      const p = byKey.get(d.toISOString().slice(0, 10) + '|' + r.level + '|' + r.name);
+      const out = { key: r.key };
+      for (const c of rates) out[c + '_chg'] = p && r[c] !== null && p[c] !== null ? r[c] - p[c] : null;
+      for (const c of rel) out[c + '_chg'] = p && r[c] !== null && p[c] ? r[c] / p[c] - 1 : null;
+      return out;
+    });
+  },
+});
+</script>
+
+<script>
+(() => {
+  const root = document.getElementById('mv');
+  const tip = document.getElementById('mv-tip');
+  const C = { teal: '#00c2a8', indigo: '#6366f1', coral: '#ff6b57', amber: '#f5a524', sky: '#38bdf8', navy: '#1b2370' };
+  const compact = new Intl.NumberFormat('en', { notation: 'compact', maximumFractionDigits: 1 });
+  const F = {
+    int: (v) => (v === null || v === undefined ? '—' : Math.abs(v) >= 100000 ? compact.format(v) : d3.format(',.0f')(v)),
+    usd: (v) => (v === null || v === undefined ? '—' : '$' + (Math.abs(v) >= 10000 ? compact.format(v) : d3.format(',.0f')(v))),
+    pct: (v) => (v === null || v === undefined ? '—' : d3.format('.1%')(v)),
+    dec: (v) => (v === null || v === undefined ? '—' : d3.format('.2f')(v)),
+    dec1: (v) => (v === null || v === undefined ? '—' : d3.format('.1f')(v)),
+    rel: (v) => (v === null || v === undefined ? '—' : (v > 0 ? '+' : '') + d3.format('.1%')(v)),
+    pp: (v) => (v === null || v === undefined ? '—' : (v > 0 ? '+' : '') + d3.format('.1f')(v * 100) + ' pp'),
+  };
+  const enc = (s) => String(s).replace(/%/g, '%25').replace(/&/g, '%26').replace(/=/g, '%3D');
+  const wkFmt = (w) => d3.utcFormat('%b %-d, %Y')(new Date(w + 'T00:00:00Z'));
+  const wkShort = (d) => d3.utcFormat('%b %-d')(d);
+
+  let page = 'overview';
+  let sort = { field: 'core_vehicles_on_exit_day', dir: 'descending' };
+
+  // ---------- filters ----------
+  const fc = document.getElementById('f-country'), fy = document.getElementById('f-city'), fw = document.getElementById('f-week');
+  fc.addEventListener('change', () => dash.setParams({ country: fc.value || null, city: null }));
+  fy.addEventListener('change', () => dash.setParams({ city: fy.value || null }));
+  fw.addEventListener('change', () => dash.setParams({ week: fw.value || null }));
+  document.getElementById('f-reset').addEventListener('click', () => dash.resetParams());
+
+  // ---------- tabs ----------
+  const tabs = [...root.querySelectorAll('.mv-tab')];
+  const show = (id) => {
+    if (!document.getElementById(id) || !tabs.some((t) => t.dataset.page === id)) return;
+    page = id;
+    tabs.forEach((t) => t.setAttribute('aria-selected', String(t.dataset.page === id)));
+    root.querySelectorAll('.mv-page').forEach((p) => (p.hidden = p.id !== id));
+    draw();
+  };
+  tabs.forEach((t) => t.addEventListener('click', () => { show(t.dataset.page); dash.setLink(t.dataset.page); }));
+
+  // ---------- tooltip ----------
+  const showTip = (ev, html) => {
+    tip.replaceChildren(...html);
+    tip.hidden = false;
+    const rb = root.getBoundingClientRect();
+    let x = ev.clientX - rb.left + 14, y = ev.clientY - rb.top + 14;
+    const w = tip.offsetWidth, h = tip.offsetHeight;
+    if (x + w > rb.width - 8) x = ev.clientX - rb.left - w - 14;
+    if (x < 4) x = 4;
+    if (y + h > rb.height - 8) y = ev.clientY - rb.top - h - 14;
+    tip.style.left = x + 'px'; tip.style.top = y + 'px';
+  };
+  const hideTip = () => (tip.hidden = true);
+  const tipNodes = (head, lines) => {
+    const h = document.createElement('div'); h.className = 'h'; h.textContent = head;
+    return [h, ...lines.map(([color, label, val]) => {
+      const r = document.createElement('div'); r.className = 'r';
+      const l = document.createElement('span');
+      if (color) { const i = document.createElement('i'); i.style.background = color; l.append(i); }
+      l.append(label);
+      const v = document.createElement('b'); v.textContent = val;
+      r.append(l, v); return r;
+    })];
+  };
+
+  // ---------- charts ----------
+  const legend = (el, series) => {
+    if (series.length < 2) return;
+    const lg = document.createElement('div'); lg.className = 'mv-legend';
+    series.forEach((s) => { const sp = document.createElement('span'); const i = document.createElement('i'); i.style.background = s.color; sp.append(i, s.label); lg.append(sp); });
+    el.append(lg);
+  };
+
+  const axisY = (g, y, fmt, W) => {
+    g.call(d3.axisLeft(y).ticks(5).tickSize(-W).tickFormat(fmt)).attr('font-size', null).attr('font-family', null);
+    g.classed('grid', true).select('.domain').remove();
+  };
+
+  function lineChart(el, rows, series, fmt, opts = {}) {
+    el.replaceChildren();
+    legend(el, series);
+    const W = Math.max(280, el.clientWidth), H = 220;
+    const pts = rows.map((r) => ({ d: new Date(r.week + 'T00:00:00Z'), r }));
+    const vals = series.flatMap((s) => pts.map((p) => p.r[s.field])).filter((v) => v !== null && v !== undefined);
+    if (!vals.length) { const n = document.createElement('p'); n.className = 'mv-cn'; n.textContent = 'No data reported for this selection.'; el.append(n); return; }
+    let lo = opts.zero === false ? d3.min(vals) : Math.min(0, d3.min(vals)), hi = d3.max(vals);
+    if (opts.zero === false) { const pad = (hi - lo) * 0.15 || Math.abs(hi) * 0.05 || 1; lo -= pad; hi += pad; }
+    const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`);
+    const y = d3.scaleLinear([lo, hi], [H - 26, 8]).nice();
+    const probe = svg.append('g'); axisY(probe, y, fmt, 0);
+    let left = 0; probe.selectAll('text').each(function () { left = Math.max(left, this.getComputedTextLength()); });
+    probe.remove();
+    const m = { l: left + 12, r: 12 };
+    const x = d3.scaleUtc(d3.extent(pts, (p) => p.d), [m.l, W - m.r]);
+    const gy = svg.append('g').attr('transform', `translate(${m.l},0)`); axisY(gy, y, fmt, W - m.l - m.r);
+    const tickN = Math.max(2, Math.min(pts.length, Math.floor((W - m.l) / 70)));
+    svg.append('g').attr('transform', `translate(0,${H - 26})`).call(d3.axisBottom(x).tickValues(pts.filter((_, i) => i % Math.ceil(pts.length / tickN) === 0).map((p) => p.d)).tickFormat(wkShort).tickSizeOuter(0)).attr('font-size', null).attr('font-family', null);
+    series.forEach((s, i) => {
+      const line = d3.line().defined((p) => p.r[s.field] !== null && p.r[s.field] !== undefined).x((p) => x(p.d)).y((p) => y(p.r[s.field]));
+      if (i === 0 && series.length === 1) {
+        const id = 'g' + Math.random().toString(36).slice(2);
+        const gr = svg.append('defs').append('linearGradient').attr('id', id).attr('x1', 0).attr('x2', 0).attr('y1', 0).attr('y2', 1);
+        [[0, .26], [.25, .16], [.5, .08], [.75, .03], [1, 0]].forEach(([o, a]) => gr.append('stop').attr('offset', o).attr('style', `stop-color:${s.color};stop-opacity:${a}`));
+        svg.append('path').datum(pts).attr('fill', `url(#${id})`).attr('d', d3.area().defined(line.defined()).x((p) => x(p.d)).y0(y(Math.max(lo, y.domain()[0]))).y1((p) => y(p.r[s.field])));
+      }
+      svg.append('path').datum(pts).attr('fill', 'none').attr('stroke', s.color).attr('stroke-width', 2).attr('stroke-linecap', 'round').attr('stroke-linejoin', 'round').attr('d', line);
+    });
+    const rule = svg.append('line').attr('y1', 8).attr('y2', H - 26).attr('stroke', 'var(--cds-chart-reference)').attr('opacity', 0);
+    const dots = series.map((s) => svg.append('circle').attr('r', 4).attr('fill', s.color).attr('stroke', 'var(--color-panel)').attr('stroke-width', 2).attr('opacity', 0));
+    svg.append('rect').attr('x', m.l).attr('y', 0).attr('width', W - m.l - m.r).attr('height', H - 20).attr('fill', 'transparent')
+      .on('mousemove', (ev) => {
+        const [mx] = d3.pointer(ev);
+        const p = d3.least(pts, (q) => Math.abs(x(q.d) - mx));
+        rule.attr('x1', x(p.d)).attr('x2', x(p.d)).attr('opacity', 1);
+        series.forEach((s, i) => { const v = p.r[s.field]; dots[i].attr('cx', x(p.d)).attr('cy', v === null ? -99 : y(v)).attr('opacity', v === null ? 0 : 1); });
+        showTip(ev, tipNodes('Week of ' + wkFmt(p.r.week), series.map((s) => [series.length > 1 ? s.color : null, s.label, fmt(p.r[s.field])])));
+      })
+      .on('mouseleave', () => { hideTip(); rule.attr('opacity', 0); dots.forEach((d) => d.attr('opacity', 0)); });
+  }
+
+  function barChart(el, rows, field, label, fmt, color, selWeek) {
+    el.replaceChildren();
+    const W = Math.max(280, el.clientWidth), H = 220;
+    const data = rows.filter((r) => r[field] !== null);
+    if (!data.length) { const n = document.createElement('p'); n.className = 'mv-cn'; n.textContent = 'No data reported for this selection.'; el.append(n); return; }
+    const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`);
+    const y = d3.scaleLinear([0, d3.max(data, (r) => r[field])], [H - 26, 8]).nice();
+    const probe = svg.append('g'); axisY(probe, y, fmt, 0);
+    let left = 0; probe.selectAll('text').each(function () { left = Math.max(left, this.getComputedTextLength()); });
+    probe.remove();
+    const m = { l: left + 12, r: 4 };
+    const x = d3.scaleBand(rows.map((r) => r.week), [m.l, W - m.r]).padding(0.3);
+    const gy = svg.append('g').attr('transform', `translate(${m.l},0)`); axisY(gy, y, fmt, W - m.l - m.r);
+    const every = Math.ceil(rows.length / Math.max(2, Math.floor((W - m.l) / 60)));
+    svg.append('g').attr('transform', `translate(0,${H - 26})`).call(d3.axisBottom(x).tickValues(rows.map((r) => r.week).filter((_, i) => i % every === 0)).tickFormat((w) => wkShort(new Date(w + 'T00:00:00Z'))).tickSizeOuter(0)).attr('font-size', null).attr('font-family', null);
+    const bw = Math.min(32, x.bandwidth());
+    svg.append('g').selectAll('rect').data(data).join('rect')
+      .attr('x', (r) => x(r.week) + (x.bandwidth() - bw) / 2).attr('width', bw)
+      .attr('y', (r) => y(r[field])).attr('height', (r) => y(0) - y(r[field])).attr('rx', 4)
+      .attr('fill', color).attr('opacity', (r) => (r.week === selWeek ? 1 : 0.55))
+      .on('mousemove', (ev, r) => showTip(ev, tipNodes('Week of ' + wkFmt(r.week), [[null, label, fmt(r[field])]])))
+      .on('mouseleave', hideTip);
+  }
+
+  function hbar(el, rows, field, fmt, selName) {
+    el.replaceChildren();
+    const data = rows.filter((r) => r[field] !== null).sort((a, b) => b[field] - a[field]);
+    if (!data.length) { const n = document.createElement('p'); n.className = 'mv-cn'; n.textContent = 'No data reported for this selection.'; el.append(n); return; }
+    const max = d3.max(data, (r) => r[field]) || 1;
+    data.forEach((r) => {
+      const l = document.createElement('span'); l.className = 'mv-hb-l'; l.textContent = r.name;
+      const t = document.createElement('div'); t.className = 'mv-hb-t';
+      const b = document.createElement('div'); b.className = 'mv-hb-b' + (r.name === selName ? ' sel' : '');
+      b.style.width = Math.max(1, (r[field] / max) * 100) + '%'; t.append(b);
+      const v = document.createElement('span'); v.className = 'mv-hb-v';
+      v.dataset.source = 'agg'; v.dataset.field = field; v.dataset.where = 'key=' + enc(r.key);
+      v.textContent = fmt(r[field]);
+      el.append(l, t, v);
+    });
+  }
+
+  // ---------- table ----------
+  const tbl = document.getElementById('t-cities');
+  const search = document.getElementById('t-search');
+  const cols = [...tbl.querySelectorAll('th')].map((th) => th.dataset.field);
+  const colFmt = { name: String, country: String, core_vehicles_on_exit_day: F.int, assigned_vehicles_on_exit_day: F.int, utilisation: F.pct, billable_pct: F.pct, active_drivers: F.int, total_trips: F.int, cycle_remittance_usd: F.usd, collection_rate: F.pct, closing_debt_usd: F.usd, unbilled_rate: F.pct };
+  tbl.querySelectorAll('th').forEach((th) => th.querySelector('button').addEventListener('click', () => {
+    const f = th.dataset.field;
+    sort = { field: f, dir: sort.field === f && sort.dir === 'descending' ? 'ascending' : 'descending' };
+    draw();
+  }));
+  search.addEventListener('input', () => draw());
+  tbl.addEventListener('click', (ev) => {
+    const tr = ev.target.closest('tbody tr[data-key]');
+    if (!tr) return;
+    const r = (dash.data('agg').data || []).find((x) => x.key === tr.dataset.key);
+    if (r) { dash.setParams({ country: r.country, city: r.name }); show('overview'); dash.setLink('overview'); }
+  });
+  const pill = (f, v) => {
+    const s = document.createElement('span'); s.className = 'mv-pill';
+    const good = f === 'unbilled_rate' ? v < 0.08 : v >= 0.85, ok = f === 'unbilled_rate' ? v < 0.15 : v >= 0.7;
+    s.classList.add(good ? 'g' : ok ? 'a' : 'r'); s.textContent = colFmt[f](v); return s;
+  };
+  function drawTable(rows) {
+    const q = search.value.trim().toLowerCase();
+    const list = rows.filter((r) => !q || (r.name + ' ' + r.country).toLowerCase().includes(q));
+    const f = sort.field, sgn = sort.dir === 'ascending' ? 1 : -1;
+    list.sort((a, b) => {
+      const x = a[f], y = b[f];
+      if (x === null) return 1; if (y === null) return -1;
+      return typeof x === 'number' ? sgn * (x - y) : sgn * String(x).localeCompare(String(y));
+    });
+    tbl.querySelectorAll('th').forEach((th) => (th.dataset.field === f ? th.setAttribute('aria-sort', sort.dir) : th.removeAttribute('aria-sort')));
+    const body = tbl.querySelector('tbody');
+    body.replaceChildren(...list.map((r) => {
+      const tr = document.createElement('tr'); tr.dataset.key = r.key;
+      cols.forEach((c, i) => {
+        const td = document.createElement('td');
+        if (tbl.querySelectorAll('th')[i].classList.contains('hn')) td.className = 'hn';
+        const v = r[c];
+        if (v === null || v === undefined) td.textContent = '—';
+        else if (c === 'utilisation' || c === 'collection_rate' || c === 'unbilled_rate') td.append(pill(c, v));
+        else td.textContent = colFmt[c](v);
+        tr.append(td);
+      });
+      return tr;
+    }));
+  }
+
+  // ---------- main draw ----------
+  const opt = (v, t) => new Option(t, v);
+  function draw() {
+    const a = dash.data('agg');
+    const ok = a.status === 'ok' && Array.isArray(a.data) && a.data.length;
+    root.querySelectorAll('.mv-v, .mv-d').forEach((e) => e.classList.toggle('dash-skeleton', a.status === 'loading'));
+    if (!ok) {
+      root.querySelectorAll('.mv-v, .mv-d').forEach((e) => (e.textContent = '—'));
+      root.querySelectorAll('[data-chart], [data-hbar]').forEach((e) => {
+        e.replaceChildren();
+        if (a.status === 'error') { const n = document.createElement('p'); n.className = 'mv-cn'; n.textContent = 'Failed to load'; e.append(n); }
+      });
+      return;
+    }
+    const rows = a.data;
+    const wow = dash.data('wow');
+    const wowBy = new Map((wow.status === 'ok' ? wow.data : []).map((r) => [r.key, r]));
+    const P = dash.params();
+    const weeks = [...new Set(rows.map((r) => r.week))].sort();
+    const week = P.week && weeks.includes(P.week) ? P.week : weeks[weeks.length - 1];
+    const countries = [...new Set(rows.filter((r) => r.level === 'country').map((r) => r.name))].sort();
+    const country = P.country && countries.includes(P.country) ? P.country : null;
+    const cities = [...new Set(rows.filter((r) => r.level === 'city' && (!country || r.country === country)).map((r) => r.name))].sort();
+    const city = P.city && cities.includes(P.city) ? P.city : null;
+
+    fc.replaceChildren(opt('', 'All countries'), ...countries.map((c) => opt(c, c))); fc.value = country ?? '';
+    fy.replaceChildren(opt('', country ? 'All cities in ' + country : 'All cities'), ...cities.map((c) => opt(c, c))); fy.value = city ?? '';
+    fw.replaceChildren(...weeks.slice().reverse().map((w, i) => opt(w, wkFmt(w) + (i === 0 ? ' (latest)' : '')))); fw.value = week;
+
+    const level = city ? 'city' : country ? 'country' : 'all';
+    const name = city || country || 'All markets';
+    const keyOf = (w) => w + '|' + level + '|' + name;
+    const cur = rows.find((r) => r.key === keyOf(week));
+    const trend = weeks.map((w) => rows.find((r) => r.key === keyOf(w))).filter(Boolean);
+    const curWow = wowBy.get(keyOf(week)) || {};
+
+    root.querySelector('.mv-wk').textContent = wkFmt(week);
+    root.querySelector('.mv-scope').textContent = name;
+
+    root.querySelectorAll('.mv-v').forEach((e) => {
+      if (e.closest('.mv-hb')) return;
+      e.dataset.where = 'key=' + enc(keyOf(week));
+      e.textContent = F[e.dataset.fmt](cur ? cur[e.dataset.field] : null);
+    });
+    root.querySelectorAll('.mv-d').forEach((e) => {
+      e.dataset.where = 'key=' + enc(keyOf(week));
+      const v = curWow[e.dataset.field];
+      e.textContent = F[e.dataset.fmt](v ?? null);
+      e.classList.remove('mv-up', 'mv-down');
+      if (v) e.classList.add((v > 0) === (e.dataset.good === 'up') ? 'mv-up' : 'mv-down');
+    });
+    // funnel widths
+    const core = cur && cur.core_vehicles_on_exit_day;
+    root.querySelectorAll('.mv-fun-bar').forEach((b) => {
+      const v = cur ? cur[b.dataset.f] : null;
+      b.style.width = core && v !== null ? Math.max(14, (v / core) * 100) + '%' : '14%';
+    });
+
+    // market breakdown: countries for all, cities of the country otherwise
+    const mkt = rows.filter((r) => r.week === week && (country ? r.level === 'city' && r.country === country : r.level === 'country'));
+    root.querySelectorAll('.mv-mkt-note').forEach((n) => (n.textContent = (country ? 'Cities in ' + country : 'Countries') + ' · week of ' + wkFmt(week)));
+
+    const pg = document.getElementById(page);
+    pg.querySelectorAll('[data-hbar]').forEach((el) => hbar(el, mkt, el.dataset.hbar, F[el.dataset.fmt], city || country));
+    const ch = (id) => pg.querySelector(`[data-chart="${id}"]`);
+    if (page === 'overview') {
+      lineChart(ch('ov-cash'), trend, [{ field: 'cycle_expected_cash_usd', label: 'Expected cash', color: C.indigo }, { field: 'cycle_driver_payment_usd', label: 'Collected', color: C.teal }], F.usd);
+      lineChart(ch('ov-fleet'), trend, [{ field: 'core_vehicles_on_exit_day', label: 'Core', color: C.navy }, { field: 'assigned_vehicles_on_exit_day', label: 'Assigned', color: C.teal }], F.int);
+    } else if (page === 'fleet') {
+      lineChart(ch('fl-veh'), trend, [{ field: 'core_vehicles_on_exit_day', label: 'Core', color: C.indigo }, { field: 'available_vehicles_on_exit_day', label: 'Available', color: C.sky }, { field: 'assigned_vehicles_on_exit_day', label: 'Assigned', color: C.teal }], F.int);
+      lineChart(ch('fl-rate'), trend, [{ field: 'utilisation', label: 'Assigned ÷ core', color: C.teal }, { field: 'assigned_by_available', label: 'Assigned ÷ available', color: C.indigo }, { field: 'billable_pct', label: 'Billable days', color: C.amber }], F.pct, { zero: false });
+      barChart(ch('fl-ready'), trend, 'ready_to_be_assigned_vehicles', 'Ready to be assigned', F.int, C.amber, week);
+    } else if (page === 'drivers') {
+      lineChart(ch('dr-act'), trend, [{ field: 'active_drivers', label: 'Active', color: C.indigo }, { field: 'trip_active_drivers', label: 'Trip-active', color: C.teal }], F.int);
+      barChart(ch('dr-trips'), trend, 'total_trips', 'Trips', F.int, C.teal, week);
+      lineChart(ch('dr-acq'), trend, [{ field: 'newly_assigned_drn_count', label: 'Newly assigned', color: C.teal }, { field: 'winback_driver_count', label: 'Win-back', color: C.coral }], F.int);
+      lineChart(ch('dr-unb'), trend, [{ field: 'unbilled_rate', label: 'Unbilled rate', color: C.coral }], F.pct);
+    } else if (page === 'collections') {
+      lineChart(ch('co-cash'), trend, [{ field: 'cycle_expected_cash_usd', label: 'Expected cash', color: C.indigo }, { field: 'cycle_driver_payment_usd', label: 'Driver payments', color: C.teal }], F.usd);
+      lineChart(ch('co-rate'), trend, [{ field: 'collection_rate', label: 'Collection rate', color: C.teal }], F.pct, { zero: false });
+      lineChart(ch('co-debt'), trend, [{ field: 'opening_debt_usd', label: 'Opening debt', color: C.amber }, { field: 'closing_debt_usd', label: 'Closing debt', color: C.coral }], F.usd);
+    } else if (page === 'cities') {
+      drawTable(rows.filter((r) => r.week === week && r.level === 'city' && (!country || r.country === country)));
+    }
+  }
+
+  dash.onData(draw);
+  const named = location.hash.slice(1);
+  if (named) show(named);
+})();
+</script>
